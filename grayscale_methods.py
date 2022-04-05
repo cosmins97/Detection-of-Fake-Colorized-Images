@@ -28,21 +28,11 @@ def image_to_grayscale(in_path, out_path):
     :return: a black/white image saved at the specified location
     """
     # read image
-    img = fh.read_image(in_path)
+    img = fh.read_image(in_path, cv.IMREAD_COLOR)
 
-    # get width and height
-    height = img.shape[0]
-    width = img.shape[1]
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-    # go through pixels
-    for h in range(0, height):
-        for w in range(0, width):
-            # get a pixel
-            pixel = img[h][w]
-            # transform it in b/w using a method
-            img[h][w] = pixel_to_grayscale(pixel)
-
-    fh.save_image(img, out_path)
+    fh.save_image(gray, out_path)
 
 
 def create_grayscale_images(in_path, out_path):
@@ -50,9 +40,11 @@ def create_grayscale_images(in_path, out_path):
     Take all images from the in path and create grayscale versions of them at out path.
     :param in_path: Path to the original images
     :param out_path: Path to the grayscale images
-    :return: Number of converted images.
+    :return: Nothing.
     """
     counter = 0
+
+    print("Converted to greyscale:")
 
     for file in os.listdir(in_path):
         original_file_path = os.path.join(in_path, file)
@@ -61,5 +53,7 @@ def create_grayscale_images(in_path, out_path):
             gray_file_path = os.path.join(out_path, file)
             image_to_grayscale(original_file_path, gray_file_path)
             counter += 1
+            print(file)
 
-    return counter
+    print("\n" + str(counter) + " gray image(s) have been created in folder " + str(out_path) + ".\n")
+

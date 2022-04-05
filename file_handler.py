@@ -2,13 +2,14 @@ import cv2 as cv
 import os
 
 
-def read_image(path):
+def read_image(path, type):
     """
     Read image from specified path.
     :param path: a path to a image
+    :param type: color / grayscale
     :return: the image from path or None if the file is not supported
     """
-    ret_img = cv.imread(cv.samples.findFile(path), cv.IMREAD_COLOR)
+    ret_img = cv.imread(cv.samples.findFile(path), type)
     return ret_img
 
 
