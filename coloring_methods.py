@@ -1,6 +1,26 @@
 import cv2 as cv
 import file_handler as fh
 import os
+import PIL
+import torch
+from matplotlib import pyplot as plt
+from torchvision import transforms
+
+from colorization.loss import *
+from colorization.models import *
+from colorization.utils import *
+from colorization.dataset import *
+
+from fastai.vision.learner import create_body
+from torchvision.models.resnet import resnet18
+from fastai.vision.models.unet import DynamicUnet
+
+
+def build_res_unet(n_input=1, n_output=2, size=256):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    body = create_body(resnet18, pretrained=True, n_in=n_input, cut=-2)
+    net_G = DynamicUnet(body, n_output, (size, size)).to(device)
+    return net_G
 
 
 def image_to_color(in_path, out_path, color_map):
@@ -11,12 +31,27 @@ def image_to_color(in_path, out_path, color_map):
     :param color_map: Color map used.
     :return: Nothing
     """
-    img = fh.read_image(in_path, cv.IMREAD_GRAYSCALE)
 
     # convert to color
-    imgC = cv.applyColorMap(img, color_map)
+    net_G = build_res_unet(n_input=1, n_output=2, size=256)
+    net_G.load_state_dict(torch.load("colorization/resnet18.pth", map_location=torch.device('cpu')), strict=False)
+    model = MainModel(net_G=net_G)
+    model.load_state_dict(torch.load("colorization/final_model_weights.pt", map_location=torch.device('cpu')),
+                          strict=False)
 
-    fh.save_image(imgC, out_path)
+    path = in_path
+    img = PIL.Image.open(path)
+    img = img.resize((256, 256))
+    # to make it between -1 and 1
+    img = transforms.ToTensor()(img)[:1] * 2. - 1.
+    model.eval()
+    with torch.no_grad():
+        preds = model.net_G(img.unsqueeze(0).to(torch.device('cpu')))
+    colorized = lab_to_rgb(img.unsqueeze(0), preds.cpu())[0]
+
+    plt.imsave(out_path, colorized)
+
+    # fh.save_image(colorized, out_path)
 
 
 def create_color_images(in_path, out_path):
