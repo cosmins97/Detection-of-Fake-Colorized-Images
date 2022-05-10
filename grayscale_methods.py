@@ -35,7 +35,7 @@ def image_to_grayscale(in_path, out_path):
     fh.save_image(gray, out_path)
 
 
-def create_grayscale_images(in_path, out_path):
+def create_grayscale_images(in_path, out_path, image_limit):
     """
     Take all images from the in path and create grayscale versions of them at out path.
     :param in_path: Path to the original images
@@ -54,6 +54,9 @@ def create_grayscale_images(in_path, out_path):
             image_to_grayscale(original_file_path, gray_file_path)
             counter += 1
             print(file)
+
+            if counter == image_limit:
+                break
 
     print("\n" + str(counter) + " gray image(s) have been created in folder " + str(out_path) + ".\n")
 

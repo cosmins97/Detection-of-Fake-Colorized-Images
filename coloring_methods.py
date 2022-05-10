@@ -54,7 +54,7 @@ def image_to_color(in_path, out_path, color_map):
     # fh.save_image(colorized, out_path)
 
 
-def create_color_images(in_path, out_path):
+def create_color_images(in_path, out_path, image_limit):
     """
     Take all images from the in path and create colorized versions of them at out path.
     :param in_path: Path to the grayscale images
@@ -74,5 +74,8 @@ def create_color_images(in_path, out_path):
             image_to_color(original_file_path, gray_file_path, color_map)
             counter += 1
             print(file)
+
+            if counter == image_limit:
+                break
 
     print("\n" + str(counter) + " color image(s) have been created in folder " + str(out_path) + ".\n")
