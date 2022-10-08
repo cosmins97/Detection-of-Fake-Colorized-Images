@@ -7,20 +7,23 @@ import os.path
 original_images_path = './original_images'
 grayscale_images_path = './grayscale_images'
 colorized_images_path = './colorized_images'
+resized_images_path = './resized_images'
 
 # parameters and operations
-image_limit = 10
+image_limit = 1
 create_grayscale = 0
 create_colorized = 0
 create_histograms = 0
+create_resize = 0
 
 train_model = 1
-image_train_limit = 100
+image_train_limit = 10000
 
 if __name__ == '__main__':
     original_img_exist = os.path.isdir(original_images_path)
     gray_img_exist = os.path.isdir(grayscale_images_path)
     color_img_exist = os.path.isdir(colorized_images_path)
+    resized_img_exist = os.path.isdir(resized_images_path)
 
     if create_grayscale:
         # verify the original images folder
@@ -38,6 +41,23 @@ if __name__ == '__main__':
 
         # create the grayscale images from the original ones
         grm.create_grayscale_images(original_images_path, grayscale_images_path, image_limit)
+
+    if create_resize:
+        # verify the original images folder
+        if not original_img_exist:
+            print("Original Images Folder Path doesn't exist.\n")
+            exit(0)
+
+        # verify the resized images folder
+        if not resized_img_exist:
+            os.mkdir(resized_images_path)
+            print("Resized Images Folder created.\n")
+        else:
+            fh.clear_folder(resized_images_path)
+            print("Resized Images Folder cleared.\n")
+
+        # create the grayscale images from the original ones
+        clm.resize_images(original_images_path, resized_images_path, image_limit)
 
     if create_colorized:
         # verify the grayscale images folder
@@ -80,4 +100,4 @@ if __name__ == '__main__':
             print("Colorized Images Folder Path doesn't exist.\n")
             exit(0)
 
-        dm.train_model(original_images_path, colorized_images_path, image_train_limit)
+        dm.train_model(resized_images_path, colorized_images_path, image_train_limit)

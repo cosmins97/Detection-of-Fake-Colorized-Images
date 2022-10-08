@@ -79,3 +79,21 @@ def create_color_images(in_path, out_path, image_limit):
                 break
 
     print("\n" + str(counter) + " color image(s) have been created in folder " + str(out_path) + ".\n")
+
+
+def resize_images(in_path, out_path, image_limit):
+    counter = 0
+
+    for file in os.listdir(in_path):
+        original_file_path = os.path.join(in_path, file)
+
+        if os.path.isfile(original_file_path):
+            gray_file_path = os.path.join(out_path, file)
+            img = fh.read_image(original_file_path, cv.IMREAD_COLOR)
+            resized = cv.resize(img, (256, 256))
+            fh.save_image(resized, gray_file_path)
+            counter += 1
+            print(file)
+
+            if counter == image_limit:
+                break
