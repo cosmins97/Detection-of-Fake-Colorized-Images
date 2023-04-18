@@ -1,0 +1,25 @@
+{
+    "name": "Fake Colorization Detector",
+    "version": "1.0.0",
+    "description": "Analyze image and tries to detect fake colorization",
+    "manifest_version": 3,
+    "author": "Cosmin Sacaci",
+    "background": {
+        "service_worker": "background_script.js"
+    },
+    "action": {
+        "default_popup": "index.html"
+    },
+    "content_scripts" : [
+        {
+            "matches" : [ "http://*/*" ],
+            "js": ["popup_script.js"]
+        }
+    ],
+    "permissions": [
+        "contextMenus", 
+        "storage",
+        "activeTab",
+        "scripting",
+        "tabs"]
+}
