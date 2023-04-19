@@ -13,7 +13,7 @@
     "content_scripts" : [
         {
             "matches" : [ "http://*/*" ],
-            "js": ["popup_script.js"]
+            "js": ["popup_script.js", "jquery-3.5.1.min.js"]
         }
     ],
     "permissions": [

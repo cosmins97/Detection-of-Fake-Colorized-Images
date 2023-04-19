@@ -16,7 +16,7 @@ create_colorized = 0
 create_histograms = 0
 create_resize = 0
 
-train_model = 1
+train_model = 0
 image_train_limit = 10000
 
 if __name__ == '__main__':
